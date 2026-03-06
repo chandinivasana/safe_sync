@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.SafeSync" parent="android:Theme.Material3.Light.NoActionBar">
+    <!-- Using a stable MaterialComponents base to ensure successful linking -->
+    <style name="Theme.SafeSync" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Optional: Match Material 3 colors if needed -->
+        <item name="colorPrimary">@android:color/holo_purple</item>
     </style>
 </resources>

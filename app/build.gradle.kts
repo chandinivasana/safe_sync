@@ -40,6 +40,7 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.navigation:navigation-compose:2.7.6")
     implementation("com.google.dagger:hilt-android:2.50")
     kapt("com.google.dagger:hilt-compiler:2.50")
@@ -48,6 +49,6 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("net.zetetic:android-database-sqlcipher:4.5.4")
     implementation("org.tensorflow:tensorflow-lite:2.14.0")
-    implementation("org.web3j:core:4.9.8-android")
+    implementation("org.web3j:core:4.8.8-android")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 }

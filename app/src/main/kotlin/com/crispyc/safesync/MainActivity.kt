@@ -17,8 +17,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.crispyc.safesync.features.safety.SafetyScreen
-import com.crispyc.safesync.features.work.WorkScreen
 import com.crispyc.safesync.features.wellness.WellnessScreen
+import com.crispyc.safesync.features.wellness.WellnessViewModel
+import com.crispyc.safesync.features.work.WorkScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -84,10 +85,4 @@ fun SafeSyncMainScreen() {
             composable("Wellness") { WellnessScreen() }
         }
     }
-}
-
-@Composable
-fun WellnessScreen() {
-    // Wellness implementation...
-    Text(text = "Wellness Hub (Journal & AI Mood)", modifier = Modifier.fillMaxSize())
 }
