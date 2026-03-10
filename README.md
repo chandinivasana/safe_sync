@@ -41,11 +41,21 @@ The gossip-based mesh protocol allows for up to 10 hops, extending the safety ne
 - Java 17
 - Physical device with BLE support (emulators will not support mesh features)
 
-### Building from Source
+### Building from Source & Running
 1. Clone the repository.
-2. Place TFLite models in `app/src/main/assets/models/`.
-3. Configure `local.properties` with your Android SDK path.
-4. Execute `./gradlew installDebug` to deploy to a connected device.
+2. Place TFLite models in `app/src/main/assets/models/`. (anomaly_detector.tflite, mood_fusion.tflite, voice_stress.tflite are included).
+3. Ensure you have the `gradle-wrapper.jar` inside `gradle/wrapper/` (if missing, run `gradle wrapper` locally to generate it).
+4. Configure `local.properties` with your Android SDK path (e.g. `sdk.dir=/Users/username/Library/Android/sdk`).
+5. Build the application:
+   ```bash
+   ./gradlew clean assembleDebug
+   ```
+6. Execute the following to deploy to a connected device:
+   ```bash
+   ./gradlew installDebug
+   ```
+7. Upon opening the app, you will be greeted by the Onboarding flow (Consent, Profile Setup, and Wallet Generation).
+8. Once completed, you can test the Safety, Work, Wellness, and Settings tabs.
 
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.

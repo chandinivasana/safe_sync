@@ -23,7 +23,13 @@ class WorkViewModel @Inject constructor(
     private val bleMeshManager: BleMeshManager
 ) : ViewModel() {
 
-    private val _gigs = MutableStateFlow<List<Gig>>(emptyList())
+    private val _gigs = MutableStateFlow<List<Gig>>(
+        listOf(
+            Gig("1", "Local Coworking Spot", "Safe Space", 0.95f),
+            Gig("2", "Community Workshop", "Gigs", 0.88f),
+            Gig("3", "Peer Mentorship", "Education", 0.92f)
+        )
+    )
     val gigs = _gigs.asStateFlow()
 
     init {

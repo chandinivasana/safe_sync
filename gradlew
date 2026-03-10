@@ -28,7 +28,7 @@ APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+DEFAULT_JVM_OPTS="-Xmx64m -Xms64m"
 
 # Use the maximum available, or at least 4G for the daemon
 if [ -n "$JAVA_OPTS" ]; then
@@ -67,7 +67,7 @@ fi
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
 # Execute Gradle
-exec "$JAVACMD" $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS 
-        -classpath "$CLASSPATH" 
-        org.gradle.wrapper.GradleWrapperMain 
+exec "$JAVACMD" $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS \
+        -classpath "$CLASSPATH" \
+        org.gradle.wrapper.GradleWrapperMain \
         "$@"

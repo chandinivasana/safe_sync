@@ -29,6 +29,9 @@ class SafetyViewModel @Inject constructor(
     private val _isSosActive = MutableStateFlow(false)
     val isSosActive = _isSosActive.asStateFlow()
 
+    private val _isArViewActive = MutableStateFlow(false)
+    val isArViewActive = _isArViewActive.asStateFlow()
+
     private val _countdown = MutableStateFlow(10)
     val countdown = _countdown.asStateFlow()
 
@@ -38,6 +41,10 @@ class SafetyViewModel @Inject constructor(
                 startSosWorkflow()
             }
         }
+    }
+
+    fun toggleArView() {
+        _isArViewActive.value = !_isArViewActive.value
     }
 
     private fun startSosWorkflow() {

@@ -30,8 +30,9 @@ class SafetyManager @Inject constructor(
     
     private var lastShakeTime: Long = 0
     private var shakeCount = 0
-    private val SHAKE_THRESHOLD = 25f // ~2.5G
-    private val SHAKE_INTERVAL = 1500L // 1.5s
+    private val SHAKE_THRESHOLD = 15f // Lower threshold for easier testing
+    private val SHAKE_COOLDOWN = 300L // 300ms minimum between distinct shakes
+    private val SHAKE_INTERVAL = 2000L // 2 seconds to complete the shakes
     private val MIN_SHAKE_COUNT = 3
 
     private val _sosTriggered = MutableSharedFlow<Unit>()
@@ -46,7 +47,7 @@ class SafetyManager @Inject constructor(
 
     private fun startMonitoring() {
         accelerometer?.let {
-            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME)
         }
     }
 
@@ -59,16 +60,20 @@ class SafetyManager @Inject constructor(
             val gForce = sqrt(x * x + y * y + z * z)
             if (gForce > SHAKE_THRESHOLD) {
                 val currentTime = System.currentTimeMillis()
-                if (currentTime - lastShakeTime < SHAKE_INTERVAL) {
-                    shakeCount++
+                // Ignore events that are too close to each other (same physical shake)
+                if (currentTime - lastShakeTime > SHAKE_COOLDOWN) {
+                    if (currentTime - lastShakeTime < SHAKE_INTERVAL) {
+                        shakeCount++
+                    } else {
+                        shakeCount = 1
+                    }
+                    lastShakeTime = currentTime
+                    
                     if (shakeCount >= MIN_SHAKE_COUNT) {
                         triggerSos()
                         shakeCount = 0
                     }
-                } else {
-                    shakeCount = 1
                 }
-                lastShakeTime = currentTime
             }
         }
     }
