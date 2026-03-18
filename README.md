@@ -61,28 +61,26 @@ The gossip-based mesh protocol allows for up to 10 hops, extending the safety ne
 The following items are implemented and functional:
 
 ### Module A: Onboarding & Setup
-- [x] **A-01: User Profile Setup** (Encrypted DataStore)
-- [x] **A-02: Home Zone Setup** (Location persistence)
-- [x] **A-04: Language Selection** (Kannada/Hindi support)
-- [x] **A-05: Permissions Onboarding** (Seamless multi-permission flow)
+-  **A-01: User Profile Setup** (Encrypted DataStore)
+-  **A-02: Home Zone Setup** (Location persistence)
+-  **A-04: Language Selection** (Kannada/Hindi support)
+-  **A-05: Permissions Onboarding** (Seamless multi-permission flow)
 
 ### Module B: BLE Mesh Network
-- [x] **B-01: BLE Scanner + Advertiser** (Background foreground service)
-- [x] **B-02: Mesh Packet Protocol** (Custom binary serialization)
-- [x] **B-05: Packet Signing & Verification** (Ed25519 via Google Tink)
+-  **B-01: BLE Scanner + Advertiser** (Background foreground service)
+-  **B-02: Mesh Packet Protocol** (Custom binary serialization)
+-  **B-05: Packet Signing & Verification** (Ed25519 via Google Tink)
 
 ### Module C: Safety Shield
-- [x] **C-01: Shake-to-SOS Trigger** (Accelerometer-based, 3 shakes)
-- [x] **C-03: SOS Mesh Broadcast** (Signed packet flood)
-- [x] **C-04: SOS Alert Receiver UI** (Real-time mesh alert popup)
+-  **C-01: Shake-to-SOS Trigger** (Accelerometer-based, 3 shakes)
+-  **C-03: SOS Mesh Broadcast** (Signed packet flood)
+-  **C-04: SOS Alert Receiver UI** (Real-time mesh alert popup)
 
 ### Module G: Blockchain Sync
-- [x] **G-01: HD Wallet Auto-Generation** (BIP-39 mnemonic, Polygon/web3j)
+-  **G-01: HD Wallet Auto-Generation** (BIP-39 mnemonic, Polygon/web3j)
 
 ### Module H: Settings & Privacy
-- [x] **H-02: DPDP Consent Flow** (Privacy-first onboarding)
-- [x] **H-04: Local Data Delete** (Room clearTable + SQLCipher)
+-  **H-02: DPDP Consent Flow** (Privacy-first onboarding)
+-  **H-04: Local Data Delete** (Room clearTable + SQLCipher)
 
 
-## License
-Distributed under the MIT License. See `LICENSE` for more information.
