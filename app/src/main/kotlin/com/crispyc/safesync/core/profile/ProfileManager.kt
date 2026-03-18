@@ -20,15 +20,26 @@ class ProfileManager @Inject constructor(
 ) {
     private val NAME_KEY = stringPreferencesKey("user_name")
     private val LANGUAGE_KEY = stringPreferencesKey("user_lang")
+    private val HOME_LAT_KEY = stringPreferencesKey("home_lat")
+    private val HOME_LNG_KEY = stringPreferencesKey("home_lng")
 
-    val userName: Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[NAME_KEY]
+    val homeZone: Flow<Pair<Double, Double>?> = context.dataStore.data.map { preferences ->
+        val lat = preferences[HOME_LAT_KEY]?.toDoubleOrNull()
+        val lng = preferences[HOME_LNG_KEY]?.toDoubleOrNull()
+        if (lat != null && lng != null) lat to lng else null
     }
 
     suspend fun saveProfile(name: String, language: String) {
         context.dataStore.edit { preferences ->
             preferences[NAME_KEY] = name
             preferences[LANGUAGE_KEY] = language
+        }
+    }
+
+    suspend fun saveHomeZone(lat: Double, lng: Double) {
+        context.dataStore.edit { preferences ->
+            preferences[HOME_LAT_KEY] = lat.toString()
+            preferences[HOME_LNG_KEY] = lng.toString()
         }
     }
 }

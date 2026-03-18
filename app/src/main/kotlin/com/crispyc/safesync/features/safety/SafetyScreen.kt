@@ -27,6 +27,7 @@ import com.crispyc.safesync.features.safety.SafetyViewModel
 @Composable
 fun SafetyScreen(viewModel: SafetyViewModel = hiltViewModel()) {
     val isSosActive by viewModel.isSosActive.collectAsState()
+    val incomingSosAlert by viewModel.incomingSosAlert.collectAsState()
     val isArViewActive by viewModel.isArViewActive.collectAsState()
     val countdown by viewModel.countdown.collectAsState()
     val context = LocalContext.current
@@ -65,8 +66,15 @@ fun SafetyScreen(viewModel: SafetyViewModel = hiltViewModel()) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Offline Maps Component (MapLibre)")
+                Text("Offline Maps Component (MapLibre)", style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(16.dp))
+                
+                Button(onClick = { viewModel.setHomeZone(12.9716, 77.5946) }) {
+                    Text("Set Current Location as Home Zone (A-02)")
+                }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+
                 Button(onClick = {
                     val permissionCheckResult = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
                     if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
@@ -80,15 +88,16 @@ fun SafetyScreen(viewModel: SafetyViewModel = hiltViewModel()) {
             }
         }
 
+        // SOS BROADCAST UI (C-01)
         if (isSosActive) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Red.copy(alpha = 0.8f)),
+                    .background(Color.Red.copy(alpha = 0.9f)),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("SOS TRIGGERED", color = Color.White, fontSize = 24.sp)
+                    Text("SOS TRIGGERED", color = Color.White, fontSize = 32.sp)
                     Text("Broadcasting in $countdown seconds", color = Color.White)
                     Spacer(modifier = Modifier.height(32.dp))
                     Button(
@@ -99,6 +108,20 @@ fun SafetyScreen(viewModel: SafetyViewModel = hiltViewModel()) {
                     }
                 }
             }
+        }
+
+        // SOS ALERT RECEIVER UI (C-04)
+        incomingSosAlert?.let { alert ->
+            AlertDialog(
+                onDismissRequest = { viewModel.dismissAlert() },
+                title = { Text("EMERGENCY ALERT", color = Color.Red) },
+                text = { Text("Incoming SOS from node: ${alert.senderId}\nTimestamp: ${alert.timestamp}") },
+                confirmButton = {
+                    Button(onClick = { viewModel.dismissAlert() }) {
+                        Text("Acknowledge")
+                    }
+                }
+            )
         }
     }
 }

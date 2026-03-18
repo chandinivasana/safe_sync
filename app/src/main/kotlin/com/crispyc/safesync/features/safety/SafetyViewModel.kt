@@ -24,11 +24,15 @@ class SafetyViewModel @Inject constructor(
     private val bleMeshManager: BleMeshManager,
     private val safetyEventDao: SafetyEventDao,
     private val cryptoManager: com.crispyc.safesync.core.crypto.CryptoManager,
+    private val profileManager: com.crispyc.safesync.core.profile.ProfileManager,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _isSosActive = MutableStateFlow(false)
     val isSosActive = _isSosActive.asStateFlow()
+
+    private val _incomingSosAlert = MutableStateFlow<MeshPacketProtocol.MeshPacket?>(null)
+    val incomingSosAlert = _incomingSosAlert.asStateFlow()
 
     private val _isArViewActive = MutableStateFlow(false)
     val isArViewActive = _isArViewActive.asStateFlow()
@@ -42,10 +46,32 @@ class SafetyViewModel @Inject constructor(
                 startSosWorkflow()
             }
         }
+
+        // Listen for incoming mesh packets
+        viewModelScope.launch {
+            bleMeshManager.incomingPackets.collect { packet ->
+                if (packet.type == MeshPacketProtocol.PacketType.SOS) {
+                    // Verify signature and show alert (C-04)
+                    if (cryptoManager.verify(packet.signature, packet.serialize())) {
+                        _incomingSosAlert.value = packet
+                    }
+                }
+            }
+        }
+    }
+
+    fun dismissAlert() {
+        _incomingSosAlert.value = null
     }
 
     fun toggleArView() {
         _isArViewActive.value = !_isArViewActive.value
+    }
+
+    fun setHomeZone(lat: Double, lng: Double) {
+        viewModelScope.launch {
+            profileManager.saveHomeZone(lat, lng)
+        }
     }
 
     private fun startSosWorkflow() {
