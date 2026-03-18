@@ -5,15 +5,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun OnboardingScreen(onOnboardingComplete: () -> Unit) {
+fun OnboardingScreen(
+    viewModel: OnboardingViewModel = hiltViewModel(),
+    onOnboardingComplete: () -> Unit
+) {
     var currentStep by remember { mutableStateOf(0) }
     
     when (currentStep) {
         0 -> ConsentScreen { currentStep++ }
-        1 -> ProfileSetupScreen { currentStep++ }
-        2 -> WalletGenerationScreen { onOnboardingComplete() }
+        1 -> ProfileSetupScreen { name, lang -> 
+            viewModel.saveProfile(name, lang)
+            currentStep++ 
+        }
+        2 -> WalletGenerationScreen(viewModel) { onOnboardingComplete() }
     }
 }
 
@@ -31,8 +38,9 @@ fun ConsentScreen(onAccepted: () -> Unit) {
 }
 
 @Composable
-fun ProfileSetupScreen(onNext: () -> Unit) {
+fun ProfileSetupScreen(onNext: (String, String) -> Unit) {
     var name by remember { mutableStateOf("") }
+    var selectedLang by remember { mutableStateOf("Kannada") }
     
     Column(modifier = Modifier.padding(16.dp).fillMaxSize(), verticalArrangement = Arrangement.Center) {
         Text("Profile Setup", style = MaterialTheme.typography.headlineMedium)
@@ -44,25 +52,42 @@ fun ProfileSetupScreen(onNext: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Text("Language: Kannada / Hindi (Phase 1)")
+        Text("Select Language:")
+        Row {
+            RadioButton(selected = selectedLang == "Kannada", onClick = { selectedLang = "Kannada" })
+            Text("Kannada", modifier = Modifier.padding(top = 12.dp))
+            Spacer(modifier = Modifier.width(16.dp))
+            RadioButton(selected = selectedLang == "Hindi", onClick = { selectedLang = "Hindi" })
+            Text("Hindi", modifier = Modifier.padding(top = 12.dp))
+        }
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = onNext, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = { onNext(name, selectedLang) }, modifier = Modifier.fillMaxWidth()) {
             Text("Continue")
         }
     }
 }
 
 @Composable
-fun WalletGenerationScreen(onComplete: () -> Unit) {
+fun WalletGenerationScreen(viewModel: OnboardingViewModel, onComplete: () -> Unit) {
+    val mnemonic by viewModel.mnemonic.collectAsState()
+    
+    LaunchedEffect(Unit) {
+        viewModel.generateWallet()
+    }
+
     Column(modifier = Modifier.padding(16.dp).fillMaxSize(), verticalArrangement = Arrangement.Center) {
         Text("HD Wallet Auto-Generation", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
         Text("Generating BIP-39 mnemonic...")
-        Text("Please write this down: 
+        if (mnemonic.isNotEmpty()) {
+            Text("""Please write this down: 
 
-apple zebra train ghost magic valid ...")
+$mnemonic""")
+        } else {
+            CircularProgressIndicator()
+        }
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = onComplete, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = onComplete, modifier = Modifier.fillMaxWidth(), enabled = mnemonic.isNotEmpty()) {
             Text("I've saved my seed phrase")
         }
     }

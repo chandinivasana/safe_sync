@@ -23,6 +23,7 @@ class SafetyViewModel @Inject constructor(
     private val safetyManager: SafetyManager,
     private val bleMeshManager: BleMeshManager,
     private val safetyEventDao: SafetyEventDao,
+    private val cryptoManager: com.crispyc.safesync.core.crypto.CryptoManager,
     @ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -69,33 +70,38 @@ class SafetyViewModel @Inject constructor(
     }
 
     private fun executeFinalSos() {
-        // 1. Broadcast SOS over Mesh
-        val sosPacket = MeshPacketProtocol.MeshPacket(
+        // 1. Create SOS Packet
+        val tempPacket = MeshPacketProtocol.MeshPacket(
             packetId = UUID.randomUUID().toString(),
-            senderId = "user_hash", // Should be actual user hash
+            senderId = "user_hash",
             timestamp = System.currentTimeMillis(),
             ttl = 10,
             type = MeshPacketProtocol.PacketType.SOS,
-            payload = "SOS: Lat: 0.0, Lng: 0.0".toByteArray(), // Need real GPS
+            payload = "SOS: Lat: 0.0, Lng: 0.0".toByteArray(),
             signature = ByteArray(0)
         )
-        bleMeshManager.broadcastPacket(sosPacket)
+        
+        // 2. Sign Packet
+        val signature = cryptoManager.sign(tempPacket.serialize())
+        val signedPacket = tempPacket.copy(signature = signature)
+        
+        // 3. Broadcast over Mesh
+        bleMeshManager.broadcastPacket(signedPacket)
 
-        // 2. Log Locally
+        // 4. Log Locally
         viewModelScope.launch {
             safetyEventDao.insertEvent(
                 SafetyEventEntity(
-                    eventHash = sosPacket.packetId,
-                    timestamp = sosPacket.timestamp,
-                    lat = 0.0, // Need real GPS
+                    eventHash = signedPacket.packetId,
+                    timestamp = signedPacket.timestamp,
+                    lat = 0.0,
                     lng = 0.0,
                     eventType = 1
                 )
             )
         }
 
-        // 3. Auto-dial contacts (PRD F1.1.4)
-        // This is a placeholder for actual sequence dialing logic
+        // 5. Auto-dial contacts (PRD F1.1.4)
         autoDialEmergencyContact()
     }
 

@@ -51,7 +51,9 @@ dependencies {
     implementation("net.zetetic:android-database-sqlcipher:4.5.4")
     implementation("org.tensorflow:tensorflow-lite:2.14.0")
     implementation("org.web3j:core:4.8.8-android")
+    implementation("com.google.crypto.tink:tink-android:1.12.0")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // CameraX
     val cameraxVersion = "1.3.1"

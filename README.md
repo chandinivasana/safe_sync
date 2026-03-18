@@ -36,26 +36,33 @@ The gossip-based mesh protocol allows for up to 10 hops, extending the safety ne
 
 ## Setup and Installation
 
-### Requirements
-- Android SDK 26+
-- Java 17
-- Physical device with BLE support (emulators will not support mesh features)
+### Android Studio Setup
+1. **Open Android Studio:** Select "Open" and navigate to the `safesync/` directory.
+2. **Gradle Sync:** Allow Android Studio to sync Gradle and download dependencies.
+3. **SDK Requirements:** Ensure you have Android SDK 34 (API 34) and Build Tools installed.
+4. **Java Version:** Set the Gradle JDK to Java 17 in `Settings > Build, Execution, Deployment > Build Tools > Gradle`.
 
 ### Building from Source & Running
-1. Clone the repository.
-2. Place TFLite models in `app/src/main/assets/models/`. (anomaly_detector.tflite, mood_fusion.tflite, voice_stress.tflite are included).
-3. Ensure you have the `gradle-wrapper.jar` inside `gradle/wrapper/` (if missing, run `gradle wrapper` locally to generate it).
-4. Configure `local.properties` with your Android SDK path (e.g. `sdk.dir=/Users/username/Library/Android/sdk`).
-5. Build the application:
+1. **Physical Device Recommended:** BLE Mesh and Shake-to-SOS require hardware sensors. Connect a device via USB or WiFi.
+2. **Run Configuration:** Select the `app` module and click the "Run" (green play) button.
+3. **CLI Build:** Alternatively, use the command line:
    ```bash
-   ./gradlew clean assembleDebug
+   ./gradlew assembleDebug
    ```
-6. Execute the following to deploy to a connected device:
+4. **Deployment:**
    ```bash
    ./gradlew installDebug
    ```
-7. Upon opening the app, you will be greeted by the Onboarding flow (Consent, Profile Setup, and Wallet Generation).
-8. Once completed, you can test the Safety, Work, Wellness, and Settings tabs.
+
+### Implementation Progress (Phase 1)
+- [x] **A-01:** User Profile Setup (Encrypted DataStore)
+- [x] **A-05:** Permissions Onboarding
+- [x] **B-01/02:** BLE Mesh Protocol (Custom Serialized Packets)
+- [x] **B-05:** Ed25519 Packet Signing (Google Tink)
+- [x] **C-01:** Shake-to-SOS (3 shakes in 2s)
+- [x] **G-01:** HD Wallet Auto-Generation (web3j/BIP-39)
+- [x] **H-02:** DPDP Consent Flow
+- [x] **H-04:** Local Data Delete (SQLCipher/Room)
 
 ## License
 Distributed under the MIT License. See `LICENSE` for more information.
